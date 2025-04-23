@@ -8,8 +8,8 @@ import undici from 'undici'
 // load env variable
 
 dotenv.config()
-const GOOGLE_RECAPTCHA_SECRET_KEY = process.env.GOOGLE_RECAPTCHA_SECRET_KEY
-const GOOGLE_URL_RECAPTCHA = process.env.GOOGLE_URL_RECAPTCHA
+const CLOUDFLARE_SECRET_KEY = process.env.CLOUDFLARE_SECRET_KEY
+const URL_CLOUDFLARE = process.env.URL_CLOUDFLARE
 
 const router = express.Router()
 
@@ -19,11 +19,11 @@ router.post('/', async (req, res)=>{
 
   try {
 
+
     var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null
 
     var siteVerifieyReq = {
       response: req.body.response,
-      secret: '',
       remoteip: ip
     }
 
@@ -31,24 +31,26 @@ router.post('/', async (req, res)=>{
       success: false,
       challenge_ts: '',
       hostname: '',
-      error_codes: []
+      error_codes: [],
+      action: '',
+      cdata: ''
     }
   
   
-    if (!GOOGLE_RECAPTCHA_SECRET_KEY){
+    if (!CLOUDFLARE_SECRET_KEY){
       throw new createHTTPError("cloudflare secret key not found!");
     }
     else {
-      siteVerifieyReq['secret'] = GOOGLE_RECAPTCHA_SECRET_KEY
-      const url_verified = GOOGLE_URL_RECAPTCHA
+      siteVerifieyReq.secret = CLOUDFLARE_SECRET_KEY
+      const url_verified = URL_CLOUDFLARE
 
 
       const result = await undici.fetch(url_verified, {
+        body: JSON.stringify(siteVerifieyReq),
         method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: `secret=${siteVerifieyReq.secret}&response=${siteVerifieyReq.response}&remoteip=${siteVerifieyReq.remoteip}`
+          'Content-Type': 'application/json'
+        }
       });
       const outcome = await result.json();
       if (outcome.success) {

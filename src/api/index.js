@@ -1,7 +1,7 @@
 'use strict'
 
 import express from 'express'
-import validate_recaptcha from "./validate_recaptcha.js"
+import validate_turnstile from "./validate_turnstile.js"
 
 const router = express.Router()
 
@@ -11,7 +11,7 @@ router.get('/', function(req, res){
       })
 })
 
-router.use('/validate/recaptcha/', validate_recaptcha)
+router.use('/validate/turnstile/', validate_turnstile)
 
 
 export default router
