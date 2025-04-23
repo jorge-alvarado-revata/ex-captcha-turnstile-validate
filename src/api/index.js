@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get('/', function(req, res){
     res.json({
-        message: "API V1 Para validar token de captcha.",
+        message: "API V1 Para validar token de captcha turnstile.",
       })
 })
 
