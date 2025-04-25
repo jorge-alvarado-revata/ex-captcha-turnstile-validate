@@ -11,7 +11,7 @@ router.get('/', function(req, res){
       })
 })
 
-router.use('/validate/turnstile/', validate_turnstile)
+router.use('/validate/', validate_turnstile)
 
 
 export default router
